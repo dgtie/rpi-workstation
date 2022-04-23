@@ -1,5 +1,5 @@
 # rpi-workstation
-raspberry pi zero w - developers workstation<br>
+raspberry pi zero w - make it a developers workstation<br>
 https://lamsworkshop.blogspot.com/p/raspberry-pi-zero-w-make-it-developers.html
 
 wget https://github.com/dgtie/rpi-workstation/raw/main/avr.tar.gz   #ATMEGA328P
