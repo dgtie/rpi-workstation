@@ -7,6 +7,6 @@ Attiny414:
 ```
 wget https://github.com/dgtie/rpi-workstation/raw/main/attiny.tar.gz
 ```
-#Stm31f103:
-```wget https://github.com/dgtie/rpi-workstation/raw/main/stm32.tar.gz
+#Stm32f103:
 ```
+wget https://github.com/dgtie/rpi-workstation/raw/main/stm32.tar.gz```
