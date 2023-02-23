@@ -1,0 +1,31 @@
+BIN = $(HOME)/.platformio/packages/toolchain-atmelavr/bin
+GPP = $(BIN)/avr-g++
+OBJCOPY = $(BIN)/avr-objcopy
+SIZE = $(BIN)/avr-size
+PYMCUPROG = pymcuprog
+
+SRC = $(shell ls -r *.cpp)
+OBJ = $(SRC:.cpp=.o)
+TARGET = out
+
+CFLAGS = -mmcu=attiny414
+LDFLAGS = -mmcu=attiny414 -Wl,-Map=$(TARGET).map
+
+all: $(TARGET).hex
+
+%.hex: %.elf
+	$(OBJCOPY) -O ihex -R .eeprom -R .fuse -R .lock -R .signature $< $@
+
+%.elf: $(OBJ)
+	$(GPP) $(LDFLAGS) -o $@ $^
+	$(SIZE) $@
+
+%.o: %.cpp
+	$(GPP) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm -rf *.o $(TARGET).*
+
+flash: $(TARGET).hex
+	$(PYMCUPROG) erase -d attiny414 -t uart -u /dev/ttyACM0 
+	$(PYMCUPROG) write -f $(TARGET).hex -d attiny414 -t uart -u /dev/ttyACM0

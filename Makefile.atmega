@@ -1,0 +1,31 @@
+BIN = $(HOME)/.platformio/packages/toolchain-atmelavr/bin
+GPP = $(BIN)/avr-g++
+OBJCOPY = $(BIN)/avr-objcopy
+SIZE = $(BIN)/avr-size
+AVRDUDE = avrdude
+MCU = atmega328p
+
+SRC = $(shell ls -r *.cpp)
+OBJ = $(SRC:.cpp=.o)
+TARGET = out
+
+CFLAGS = -mmcu=$(MCU)
+LDFLAGS = -mmcu=$(MCU) -Wl,-Map=$(TARGET).map
+
+all: $(TARGET).hex
+
+%.hex: %.elf
+	$(OBJCOPY) -O ihex -R .eeprom -R .fuse -R .lock -R .signature $< $@
+
+%.elf: $(OBJ)
+	$(GPP) $(LDFLAGS) -o $@ $^
+	$(SIZE) $@
+
+%.o: %.cpp
+	$(GPP) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm -rf *.o $(TARGET).*
+
+flash: $(TARGET).hex
+	$(AVRDUDE) -p $(MCU) -c stk500v2 -P /dev/ttyACM0 -U flash:w:out.hex:i
